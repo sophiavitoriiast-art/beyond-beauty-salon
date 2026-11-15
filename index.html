@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Beyond Beauty Salon</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:#FAF7F4;color:#24102E;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:hover{color:#24102E}
+button{font-family:inherit}
+.serif{font-family:Newsreader,'Playfair Display',Georgia,serif;font-weight:400}
+.script{font-family:'Dancing Script','Segoe Script',cursive;font-weight:600;color:#8A6428}
+.nav-links{display:flex;gap:40px}
+.burger{display:none}
+.navlink{position:relative;padding:6px 0}
+.navlink::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:#24102E;transform:scaleX(0);transition:transform .25s ease}
+.navlink:hover::after,.navlink.on::after{transform:scaleX(1)}
+.btn{transition:transform .2s ease,background-color .2s ease;cursor:pointer}
+.btn:hover{transform:translateY(-1px)}
+.btn .arr{display:inline-block;transition:transform .2s ease}
+.btn:hover .arr,.more:hover .arr{transform:translateX(3px)}
+.more .arr{display:inline-block;transition:transform .2s ease}
+.card{transition:transform .25s ease,box-shadow .25s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(23,21,21,.06)}
+.zoom{transition:transform .5s ease}
+.card:hover .zoom,.tile:hover .zoom{transform:scale(1.05)}
+a:focus-visible,button:focus-visible{outline:2px solid #24102E;outline-offset:3px;border-radius:6px}
+.fade{animation:fadeup .7s ease both}
+@keyframes fadeup{from{opacity:.001;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.btn,.card,.zoom{transition:none}}
+@media (max-width:700px){.deco-self,.deco-small{display:none!important}}
+@media (max-width:900px){.nav-links{display:none}.burger{display:inline-flex}.hide-sm{display:none}}
+</style>
+</helmet>
+
+<div style="background:#FAF7F4;color:#24102E;overflow:hidden">
+
+<!-- Announcement bar -->
+<sc-if value="{{barOpen}}" hint-placeholder-val="{{ true }}">
+<div style="background: {{blush}}; color:#F5ECEF; display:flex; align-items:center; justify-content:center; gap:14px; padding:6px 48px 6px 16px; position:relative; flex-wrap:wrap; min-height:24px; font-size:12px">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D9B26A" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>
+  <span>Book by phone: call or text</span>
+  <a class="btn" href="tel:+12092278658" style="background:#D9B26A;color:#24102E;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:600">+1 209-227-8658 <span class="arr">→</span></a>
+  <button onClick="{{closeBar}}" aria-label="Close announcement" style="position:absolute;right:max(12px,2vw);top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:18px;line-height:1;color:#F5ECEF;width:32px;height:32px">×</button>
+</div>
+</sc-if>
+
+<!-- Navigation -->
+<header style="background:#FFFFFF;border-bottom:1px solid #ECE3E8">
+  <div style="width:92%;max-width:1296px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 0">
+    <a href="#top" aria-label="Beyond Full Service Beauty Salon, home" style="display:flex;flex-direction:column;line-height:1;align-items:center">
+      <img src="images/logo2.png" alt="Beyond Full Service Beauty Salon logo" width="64" height="64" style="width:64px;height:64px;border-radius:50%;display:block">
+    </a>
+    <nav class="nav-links" aria-label="Main" style="font-size:13px">
+      <a class="navlink on" href="#top">Home</a>
+      <a class="navlink" href="#services">Services</a>
+      <a class="navlink" href="#gallery">Gallery</a>
+      <a class="navlink" href="#about">About</a>
+      <a class="navlink" href="#contact">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:18px">
+      <a class="btn hide-sm" href="tel:+12092278658" style="background:#24102E;color:#fff;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:500">Call to Book <span class="arr">→</span></a>
+      <button class="burger" onClick="{{toggleMenu}}" aria-label="Open menu" style="background:none;border:0;cursor:pointer;width:44px;height:44px;align-items:center;justify-content:center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+  <nav aria-label="Mobile" style="display:flex;flex-direction:column;border-top:1px solid #ECE3E8;padding:8px 5% 16px;background:#fff">
+    <sc-for list="{{menuLinks}}" as="m" hint-placeholder-count="6">
+      <a href="{{m.href}}" onClick="{{toggleMenu}}" style="padding:14px 0;font-size:15px;border-bottom:1px solid #F3EEE9">{{m.label}}</a>
+    </sc-for>
+    <a class="btn" href="tel:+12092278658" style="margin-top:16px;background:#24102E;color:#fff;border-radius:999px;padding:14px 20px;font-size:13px;font-weight:500;text-align:center">Call +1 209-227-8658</a>
+  </nav>
+  </sc-if>
+</header>
+
+<!-- Hero -->
+<section id="top" style="background:linear-gradient(100deg,#F7F0EE 0%,#EEE1E6 100%);position:relative">
+  <div style="display:flex;flex-wrap:wrap;align-items:stretch;max-width:1440px;margin:0 auto">
+    <div class="fade" style="flex:1 1 520px;min-width:0;box-sizing:border-box;padding:72px max(5%,24px) 40px max(4%,24px);display:flex;flex-direction:column;justify-content:center;gap:24px;position:relative;z-index:2">
+      <div style="font-size:11px;letter-spacing:.24em;color:#6A5C69">BEAUTY AT YOUR FINGERTIPS</div>
+      <h1 class="serif" style="margin:0;font-size:clamp(46px,5.6vw,80px);line-height:1.02;letter-spacing:-.01em;text-wrap:balance">Polished<br>Confidence<br>Everyday</h1>
+      <p style="margin:0;max-width:440px;font-size:15px;line-height:1.6;color:#4A3C4A">Manicures in a warm, welcoming Stockton salon — because you deserve it.</p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:24px">
+        <a id="book" class="btn" href="tel:+12092278658" style="background:#24102E;color:#fff;border-radius:999px;padding:15px 26px;font-size:13px;font-weight:500">Call to Book <span class="arr">→</span></a>
+        <a class="btn" href="sms:+12092278658" style="display:inline-flex;align-items:center;gap:12px;font-size:13px;font-weight:500">
+          <span style="width:44px;height:44px;border-radius:50%;border:1px solid #24102E;display:inline-flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span>
+          Send a Text
+        </a>
+        <a class="btn" href="https://www.instagram.com/bfsbeautysalon?obrf=dHNsa2Y5dWY4dTBs" style="display:inline-flex;align-items:center;font-size:13px;font-weight:500;text-decoration:underline;text-underline-offset:4px">Message on Instagram</a>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px 40px;margin-top:20px;font-size:13px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#B8893A" aria-hidden="true"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.3-6.2 3.3 1.2-6.8-5-4.9 6.9-1z"/></svg>
+          <span><strong style="font-weight:600">4.8</strong> on Google · 39 reviews</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;color:#4A3C4A">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span>Tue – Fri 10 AM – 5 PM · Sat 9 AM – 3 PM</span>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1 1 440px;min-width:0;min-height:480px;position:relative;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 32%);mask-image:linear-gradient(to right,transparent 0%,#000 32%)" role="img" aria-label="Close-up of hands with black lace and rhinestone almond nails">
+      <img src="images/nhero.jpg" alt="" width="1100" height="1100" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:55% 50%;display:block">
+      <div class="script" style="position:absolute;top:44px;right:max(4%,28px);font-size:30px;line-height:1.05;color:#F6DDA8;text-shadow:0 1px 8px rgba(36,16,46,.55);transform:rotate(-8deg);text-align:left">Good<br>Nails<br>Happier<br>You ♡</div>
+    </div>
+  </div>
+</section>
+
+<!-- Services -->
+<section id="services" style="width:92%;max-width:1296px;margin:0 auto;padding:72px 0 24px">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:28px">
+    <div>
+      <div style="font-size:10px;letter-spacing:.24em;color:#6A5C69;margin-bottom:10px">OUR SERVICES</div>
+      <h2 class="serif" style="margin:0;font-size:clamp(34px,3.6vw,48px);line-height:1.1">Treat Yourself</h2>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:20px">
+    <sc-for list="{{services}}" as="s" hint-placeholder-count="6">
+      <article class="card" style="background:#FFFFFF;border:1px solid #E9DFE4;border-radius:10px;overflow:hidden;display:flex;flex-wrap:wrap">
+        <div style="flex:1 1 380px;max-width:560px;min-width:0;aspect-ratio:1/1;overflow:hidden;position:relative" role="img" aria-label="{{s.alt}}">
+          <div class="zoom" style="position:absolute;inset:0">
+            <sc-if value="{{s.photo}}" hint-placeholder-val="{{ true }}"><img src="{{s.photo}}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+            <sc-if value="{{s.noPhoto}}" hint-placeholder-val="{{ false }}">
+            <svg viewBox="0 0 120 90" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block" aria-hidden="true">
+              <rect width="120" height="90" fill="{{s.bg}}"/>
+              <g fill="{{s.skin}}"><rect x="12" y="40" width="22" height="70" rx="11" transform="rotate(-10 23 75)"/><rect x="42" y="26" width="22" height="80" rx="11"/><rect x="72" y="36" width="22" height="74" rx="11" transform="rotate(8 83 73)"/></g>
+              <g fill="{{s.fill}}"><rect x="14" y="43" width="18" height="26" rx="9" transform="rotate(-10 23 75)"/><rect x="44" y="29" width="18" height="28" rx="9"/><rect x="74" y="39" width="18" height="26" rx="9" transform="rotate(8 83 73)"/></g>
+              <g fill="#fff" opacity=".35"><rect x="19" y="46" width="4" height="14" rx="2" transform="rotate(-10 23 75)"/><rect x="49" y="32" width="4" height="15" rx="2"/><rect x="79" y="42" width="4" height="14" rx="2" transform="rotate(8 83 73)"/></g>
+            </svg>
+            </sc-if>
+          </div>
+        </div>
+        <div style="flex:1 1 320px;min-width:0;padding:32px max(24px,4%);display:flex;flex-direction:column;justify-content:center;gap:10px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{s.icon}}"/></svg>
+          <h3 class="serif" style="margin:6px 0 0;font-size:clamp(30px,3vw,40px);line-height:1.1">{{s.name}}</h3>
+          <p style="margin:0;max-width:340px;font-size:15px;line-height:1.6;color:#6A5C69">{{s.desc}}</p>
+          <a class="btn" href="tel:+12092278658" style="align-self:flex-start;margin-top:12px;background:#24102E;color:#fff;border-radius:999px;padding:13px 24px;font-size:13px;font-weight:500">Call or Text to Book <span class="arr">→</span></a>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</section>
+
+<!-- Why choose -->
+<section id="about" style="width:92%;max-width:1296px;margin:0 auto;padding:56px 0;display:flex;flex-wrap:wrap;gap:48px 64px;align-items:center">
+  <div style="flex:1 1 440px;min-width:0;aspect-ratio:1/1;max-width:640px;border-radius:8px;overflow:hidden;position:relative;background:#EFE3EA">
+    <img src="images/nabout.jpg" alt="Gold glitter and plaid French nails with white 3D flowers and gold charms" loading="lazy" width="1200" height="800" style="width:100%;height:100%;object-fit:cover;display:block">
+  </div>
+  <div style="flex:1 1 440px;min-width:0;position:relative;display:flex;flex-direction:column;gap:26px">
+    <div class="script deco-self" style="position:absolute;top:-6px;right:0;font-size:24px;line-height:1.05;transform:rotate(-8deg)">Self<br>Care<br>Looks<br>Good<br>On You ♡</div>
+    <div>
+      <div style="font-size:10px;letter-spacing:.24em;color:#6A5C69;margin-bottom:10px">WHY CHOOSE BEYOND</div>
+      <h2 class="serif" style="margin:0;font-size:clamp(34px,3.6vw,48px);line-height:1.1">Where Every Visit<br>Feels Like Family</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px 32px">
+      <sc-for list="{{features}}" as="f" hint-placeholder-count="4">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <span style="flex:none;width:40px;height:40px;border-radius:50%;background:#EFE3EA;display:inline-flex;align-items:center;justify-content:center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.icon}}"/></svg>
+          </span>
+          <div>
+            <h3 style="margin:0 0 4px;font-size:13px;font-weight:600">{{f.title}}</h3>
+            <p style="margin:0;font-size:12px;line-height:1.55;color:#6A5C69">{{f.desc}}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div>
+      <a class="btn" href="tel:+12092278658" style="display:inline-block;background: {{blush}};color:#FAF3EE;border-radius:999px;padding:14px 26px;font-size:13px;font-weight:500">Call or Text to Book <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section id="gallery" style="width:92%;max-width:1296px;margin:0 auto;padding:24px 0 64px">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:28px">
+    <div>
+      <div style="font-size:10px;letter-spacing:.24em;color:#6A5C69;margin-bottom:10px">FEATURED WORK</div>
+      <h2 class="serif" style="margin:0;font-size:clamp(34px,3.6vw,48px);line-height:1.1">Nail Art That Speaks</h2>
+    </div>
+    <a class="more" href="https://www.instagram.com/bfsbeautysalon?obrf=dHNsa2Y5dWY4dTBs" style="font-size:12px;font-weight:500">See More on Instagram <span class="arr">→</span></a>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px">
+    <sc-for list="{{gallery}}" as="g" hint-placeholder-count="6">
+      <div class="tile" style="aspect-ratio:3/4;border-radius:8px;overflow:hidden;position:relative" role="img" aria-label="{{g.alt}}">
+        <div class="zoom" style="position:absolute;inset:0">
+          <img src="{{g.photo}}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<!-- Special offer -->
+<section style="background: {{blush}};color:#F5ECEF;position:relative;overflow:hidden">
+  <div style="max-width:1296px;width:92%;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:24px 48px;min-height:300px;position:relative">
+    <div style="flex:1 1 400px;min-width:0;padding:48px 0;display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+      <div style="font-size:10px;letter-spacing:.24em;color:#D9B26A">BOOK YOUR VISIT</div>
+      <h2 class="serif" style="margin:0;font-size:clamp(36px,4vw,54px);line-height:1.05;color:#FAF3EE">Ready for Fresh Nails?</h2>
+      <p style="margin:0;max-width:340px;font-size:14px;line-height:1.55;color:#F1E7EC">Call or text to set up your appointment. Tue – Fri 10 AM – 5 PM, Sat 9 AM – 3 PM.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px">
+        <a class="btn" href="tel:+12092278658" style="background:#D9B26A;color:#24102E;border-radius:999px;padding:13px 24px;font-size:13px;font-weight:600">Call +1 209-227-8658 <span class="arr">→</span></a>
+        <a class="btn" href="sms:+12092278658" style="border:1px solid #D9B26A;color:#F5ECEF;border-radius:999px;padding:12px 24px;font-size:13px;font-weight:500">Send a Text</a>
+        <a class="btn" href="https://www.instagram.com/bfsbeautysalon?obrf=dHNsa2Y5dWY4dTBs" style="border:1px solid #D9B26A;color:#F5ECEF;border-radius:999px;padding:12px 24px;font-size:13px;font-weight:500">Message on Instagram</a>
+      </div>
+    </div>
+    <div style="flex:1 1 360px;min-width:0;display:flex;align-items:center;justify-content:center;padding:32px 0;position:relative">
+      <img src="images/logo2.png" alt="" loading="lazy" width="260" height="260" style="width:260px;max-width:70%;height:auto;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 1px #D9B26A,0 0 0 8px #2E1541,0 0 0 9px rgba(217,178,106,.5)">
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section style="width:92%;max-width:1296px;margin:0 auto;padding:64px 0 56px">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px">
+    <div>
+      <div style="font-size:10px;letter-spacing:.24em;color:#6A5C69;margin-bottom:10px">WHAT OUR CLIENTS SAY</div>
+      <h2 class="serif" style="margin:0;font-size:clamp(32px,3.4vw,44px);line-height:1.1">Real People. Beautiful Nails.</h2>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:#6A5C69">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#B8893A" aria-hidden="true"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.3-6.2 3.3 1.2-6.8-5-4.9 6.9-1z"/></svg>
+        <span><strong style="color:#24102E;font-weight:600">4.8</strong> on Google · 39 reviews</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onClick="{{prev}}" aria-label="Previous testimonial" style="width:44px;height:44px;border:0;border-radius:50%;background:transparent;cursor:pointer;font-size:18px">←</button>
+      <button onClick="{{next}}" aria-label="Next testimonial" style="width:44px;height:44px;border:0;border-radius:50%;background:transparent;cursor:pointer;font-size:18px">→</button>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+    <sc-for list="{{testimonials}}" as="t" hint-placeholder-count="3">
+      <figure class="card" style="margin:0;background:#FFFFFF;border:1px solid #EBE2E7;border-radius:8px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;gap:24px;min-height:120px">
+        <blockquote style="margin:0;font-size:13px;line-height:1.6;color:#2B2625">“{{t.quote}}”</blockquote>
+        <figcaption style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span style="display:flex;align-items:center;gap:12px">
+            <span style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#EFE3EA,#D9B26A);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{t.initials}}</span>
+            <span style="font-size:12px;font-weight:600">{{t.name}}</span>
+          </span>
+          <span style="display:inline-flex;gap:2px" aria-label="5 out of 5 stars">
+            <sc-for list="{{t.stars}}" as="st" hint-placeholder-count="5">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#B8893A" aria-hidden="true"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.3-6.2 3.3 1.2-6.8-5-4.9 6.9-1z"/></svg>
+            </sc-for>
+          </span>
+        </figcaption>
+      </figure>
+    </sc-for>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="footer" style="width:92%;max-width:1296px;margin:0 auto;padding:32px 0 24px">
+  <div style="display:flex;flex-wrap:wrap;gap:40px 48px;justify-content:space-between;padding-bottom:40px">
+    <div style="flex:1 1 220px;display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div style="display:flex;flex-direction:column;line-height:1;width:max-content;align-items:center">
+        <img src="images/logo2.png" alt="Beyond Full Service Beauty Salon logo" loading="lazy" width="96" height="96" style="width:96px;height:96px;border-radius:50%;display:block">
+      </div>
+      <p style="margin:0;font-size:12px;color:#6A5C69">Polished looks. Happier you.</p>
+      <div style="display:flex;gap:6px;margin-left:-13px">
+        <sc-for list="{{socials}}" as="so" hint-placeholder-count="5">
+          <a href="{{so.href}}" aria-label="{{so.label}}" style="width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{so.icon}}"/></svg>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+    <nav aria-label="Quick links" style="flex:0 1 140px;min-width:120px">
+      <h4 style="margin:0 0 14px;font-size:12px;font-weight:600">Quick Links</h4>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:#6A5C69">
+        <sc-for list="{{menuLinks}}" as="m" hint-placeholder-count="6"><a href="{{m.href}}">{{m.label}}</a></sc-for>
+      </div>
+    </nav>
+    <nav aria-label="Our services" style="flex:0 1 150px;min-width:130px">
+      <h4 style="margin:0 0 14px;font-size:12px;font-weight:600">Our Services</h4>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:#6A5C69">
+        <sc-for list="{{serviceNames}}" as="n" hint-placeholder-count="6"><a href="#services">{{n}}</a></sc-for>
+      </div>
+    </nav>
+    <div id="contact" style="flex:1 1 230px;min-width:0">
+      <h4 style="margin:0 0 14px;font-size:12px;font-weight:600">Contact Us</h4>
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:12px;line-height:1.5;color:#6A5C69">
+        <div style="display:flex;gap:12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><a href="https://www.google.com/maps/search/?api=1&amp;query=2701+E+Hammer+Ln+Ste+104+Stockton+CA+95210" style="color:inherit">2701 E Hammer Ln Ste 104<br>Stockton, CA 95210</a></div>
+        <div style="display:flex;gap:12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><span><a href="tel:+12092278658" style="color:inherit">+1 209-227-8658</a><br>Call or text<br>
+          <span style="display:inline-flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+            <button onClick="{{copyPhone}}" style="cursor:pointer;background:#fff;color:#24102E;border:1px solid #D9CCD3;border-radius:999px;padding:7px 14px;font-size:11px;font-weight:500">{{copyLabel}}</button>
+          </span></span></div>
+        <div style="display:flex;gap:12px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#24102E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Tue – Fri: 10 AM – 5 PM<br>Sat: 9 AM – 3 PM<br>Sun – Mon: Closed</span></div>
+      </div>
+    </div>
+    <div class="script" style="flex:0 0 auto;font-size:24px;line-height:1.05;transform:rotate(-8deg);align-self:flex-end">Good<br>Nails<br>Brighter<br>Days<br>♡</div>
+  </div>
+  <div style="border-top:1px solid #E4DAE0;padding-top:20px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:11px;color:#6A5C69">
+    <span>© 2026 Beyond Full Service Beauty Salon LLC. All rights reserved.</span>
+    <span>Stockton, California</span>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"blush":{"editor":"color","default":"#2E1541","options":["#2E1541","#3B1D52","#24102E"],"section":"Palette"},"$preview":{"width":1440,"height":3200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { barOpen: true, menuOpen: false, shift: 0, copied: false };
+  }
+  renderVals() {
+    const skin = '#D8AE9B';
+    const trust = [
+      { icon: 'M6 3h12l4 6-10 12L2 9z M2 9h20', title: 'Hygienic & Safe', sub: 'Your safety first' },
+      { icon: 'M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z M2 21c0-3 1.9-5.4 5.1-6', title: 'Premium Products', sub: 'Loved by professionals' },
+      { icon: 'M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z', title: 'Expert Nail Artists', sub: 'Trained & certified' },
+      { icon: 'M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.3-6.2 3.3 1.2-6.8-5-4.9 6.9-1z', title: '4.8 Star Experience', sub: '39 Google reviews' }
+    ];
+    const services = [
+      { name: 'Manicure', desc: 'Clean, shape and nourish for healthy, beautiful nails.', icon: 'M8 13V5a2 2 0 0 1 4 0v6 M12 11V3a2 2 0 0 1 4 0v8 M16 11V6a2 2 0 0 1 4 0v9a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.5L3 14a2 2 0 0 1 3-2.5l2 2', bg: '#EBD3C8', skin: skin, fill: '#F2D8D2', alt: 'Burgundy French nails with white 3D flowers and gold charms', photo: 'images/ns1.jpg', noPhoto: false }
+    ];
+    const features = [
+      { title: 'Consistent, Great Results', desc: 'Experienced nail techs you can trust, appointment after appointment.', icon: 'M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.3-6.2 3.3 1.2-6.8-5-4.9 6.9-1z' },
+      { title: 'A Warm Welcome', desc: 'A friendly, attentive team from the moment you walk through the door.', icon: 'M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z' },
+      { title: 'Bring Someone Along', desc: 'Relaxing mani-pedi sessions for you, your mom, or your partner.', icon: 'M12 21c-4-2-7-5-7-9 4 0 7 3 7 9z M12 21c4-2 7-5 7-9-4 0-7 3-7 9z M12 11c-2-2-2-5 0-8 2 3 2 6 0 8z' },
+      { title: 'Effortless Booking', desc: 'Simply call or text us to reserve your spot.', icon: 'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z' }
+    ];
+    const gallery = [
+      { photo: 'images/q1.jpg', alt: 'Brown and cream nails with 3D white flowers and orange charms' },
+      { photo: 'images/q2.jpg', alt: 'Almond nails with burnt-orange French tips' },
+      { photo: 'images/q3.jpg', alt: 'Stiletto French tips with leopard print and crystals' },
+      { photo: 'images/q4.jpg', alt: 'Light blue French tips with silver glitter outline' },
+      { photo: 'images/n2.jpg', alt: 'Black cable-knit and starburst nail art' },
+      { photo: 'images/n4.jpg', alt: 'Long nude nails with hand-painted character art' }
+    ];
+    const people = [
+      { name: 'Brittany Dyson', initials: 'BD', quote: 'All the girls are super amazing! I bring my mom here to get mani/pedi’s and every girl she has had has done a amazing job! Everyone is so friendly and welcoming. Cant go wrong with anyone here!' },
+      { name: 'Debbie Smart', initials: 'DS', quote: 'My nail tech Savath did a great job on my nails. She was courteous, patient and has a great sense of humor. I hope I didn’t give her carpo tunnel lol.' },
+      { name: 'Tina Zavala', initials: 'TZ', quote: 'My husband and I get our pedicures done every 3 weeks by Maria and Savath. We wouldn’t go anywhere else, we feel like family and have a great time every time we go. The staff is excellent and I would feel confident in going to anyone there.' }
+    ];
+    const s = ((this.state.shift % 3) + 3) % 3;
+    const testimonials = [0, 1, 2].map((i) => ({ ...people[(i + s) % 3], stars: [1, 2, 3, 4, 5] }));
+    const menuLinks = [
+      { label: 'Home', href: '#top' }, { label: 'Services', href: '#services' }, { label: 'Gallery', href: '#gallery' },
+      { label: 'About', href: '#about' }, { label: 'Contact', href: '#contact' }
+    ];
+    const socials = [
+      { label: 'Instagram', icon: 'M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M17.5 6.5h.01', href: 'https://www.instagram.com/bfsbeautysalon?obrf=dHNsa2Y5dWY4dTBs' }
+    ];
+    return {
+      blush: this.props.blush ?? '#2E1541',
+      barOpen: this.state.barOpen,
+      copyLabel: this.state.copied ? 'Copied!' : 'Copy number',
+      copyPhone: () => {
+        const done = () => { this.setState({ copied: true }); setTimeout(() => this.setState({ copied: false }), 2000); };
+        try {
+          navigator.clipboard.writeText('+1 209-227-8658').then(done, () => {});
+        } catch (e) {}
+      },
+      closeBar: () => this.setState({ barOpen: false }),
+      menuOpen: this.state.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !this.state.menuOpen }),
+      prev: () => this.setState({ shift: this.state.shift - 1 }),
+      next: () => this.setState({ shift: this.state.shift + 1 }),
+      trust, services, features, gallery, testimonials, menuLinks, socials,
+      serviceNames: services.map((x) => x.name)
+    };
+  }
+}
+</script>
+</body>
+</html>
